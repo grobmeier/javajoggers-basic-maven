@@ -1,5 +1,7 @@
 package com.accenture.javajoggers.pets.commando;
 
+import com.accenture.javajoggers.pets.services.AnimalRepository;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -23,14 +25,11 @@ public class RemoveCommando extends Commando {
         System.out.println("Is it a cat or a dog?");
         String animalType = scanner.nextLine();
 
-        String sql = "delete from pets where name = ? and type = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1, petName);
-        preparedStatement.setString(2, animalType);
-        preparedStatement.execute();
+        new AnimalRepository(connection).removeAnimal(petName, animalType);
 
         System.out.println("Removed the pet");
     }
+
 
 
     @Override

@@ -26,6 +26,7 @@ public class ListCommando extends Commando {
         ResultSet resultSet = statement.executeQuery(sql);
 
         while(resultSet.next()) {
+            int id = resultSet.getInt("id");
             String name = resultSet.getString("name");
             String type = resultSet.getString("type");
 
@@ -33,12 +34,14 @@ public class ListCommando extends Commando {
             if ("dog".equals(type)) {
                 result = new Dog(name);
                 result.setAnimalType(type);
+                result.setId(id);
             } else if ("cat".equals(type)){
                 result = new Cat(name);
+                result.setId(id);
                 result.setAnimalType(type);
             }
 
-            System.out.println("Pet:" + result.getName() + ", Type: " + result.getAnimalType());
+            System.out.println("Pet:" + result.getId() + " -> " + result.getName() + ", Type: " + result.getAnimalType());
             result.makeSound();
         }
     }

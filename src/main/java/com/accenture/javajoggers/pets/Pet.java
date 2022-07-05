@@ -4,11 +4,20 @@ import java.util.Objects;
 
 public class Pet {
 
+    protected int id;
     protected String name;
     protected String animalType;
 
     public Pet(String name) {
         this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setAnimalType(String animalType) {
