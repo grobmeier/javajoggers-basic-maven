@@ -7,6 +7,8 @@ import com.accenture.javajoggers.pets.commando.ExitCommando;
 import com.accenture.javajoggers.pets.commando.ListCommando;
 import com.accenture.javajoggers.pets.commando.RemoveCommando;
 import com.accenture.javajoggers.pets.db.AnimalRepository;
+import com.accenture.javajoggers.pets.db.AnimalRepositoryDB;
+import com.accenture.javajoggers.pets.db.AnimalRepositoryMemory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -26,7 +28,8 @@ public class PetsApp {
 
     private void run() throws SQLException {
         Connection connection = new Connector().getConnection();
-        AnimalRepository animalRepository = new AnimalRepository(connection);
+        AnimalRepository animalRepository = new AnimalRepositoryDB(connection);
+        AnimalRepository animalRepositoryMemory = new AnimalRepositoryMemory(connection);
 
         Scanner scanner = new Scanner(System.in);
 
