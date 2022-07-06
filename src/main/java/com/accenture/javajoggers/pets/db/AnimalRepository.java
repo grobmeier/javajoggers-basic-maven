@@ -12,6 +12,19 @@ public class AnimalRepository {
         this.connection = connection;
     }
 
+    public boolean exists(String petName, String animalType) throws SQLException {
+        String sql = "select count(*) as cnt from pets where name = ? and type = ?";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1, petName);
+        preparedStatement.setString(2, animalType);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+        int count = resultSet.getInt("cnt");
+
+        return (count > 0);
+    }
 
     public void removeAnimal(String petName, String animalType) throws SQLException {
         String sql = "delete from pets where name = ? and type = ?";
