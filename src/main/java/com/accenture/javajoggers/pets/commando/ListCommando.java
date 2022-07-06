@@ -1,48 +1,26 @@
 package com.accenture.javajoggers.pets.commando;
 
-import com.accenture.javajoggers.pets.Cat;
-import com.accenture.javajoggers.pets.Dog;
 import com.accenture.javajoggers.pets.Pet;
+import com.accenture.javajoggers.pets.db.AnimalRepository;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 public class ListCommando extends Commando {
 
-    private Connection connection;
+    private AnimalRepository animalRepository;
 
-    public ListCommando(Connection connection) {
-        this.connection = connection;
+    public ListCommando(AnimalRepository animalRepository) {
+        this.animalRepository = animalRepository;
     }
 
     @Override
     public void execute() throws SQLException {
-        String sql = "select * from pets";
+        ArrayList<Pet> pets = animalRepository.readAnimals();
 
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery(sql);
-
-        while(resultSet.next()) {
-            int id = resultSet.getInt("id");
-            String name = resultSet.getString("name");
-            String type = resultSet.getString("type");
-
-            Pet result = null;
-            if ("dog".equals(type)) {
-                result = new Dog(name);
-                result.setAnimalType(type);
-                result.setId(id);
-            } else if ("cat".equals(type)){
-                result = new Cat(name);
-                result.setId(id);
-                result.setAnimalType(type);
-            }
-
-            System.out.println("Pet:" + result.getId() + " -> " + result.getName() + ", Type: " + result.getAnimalType());
-            result.makeSound();
+        for (Pet pet : pets) {
+            System.out.println("Pet:" + pet.getId() + " -> " + pet.getName() + ", Type: " + pet.getAnimalType());
+            pet.makeSound();
         }
     }
 

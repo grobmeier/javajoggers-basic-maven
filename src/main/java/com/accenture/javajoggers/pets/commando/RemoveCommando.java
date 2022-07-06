@@ -1,19 +1,17 @@
 package com.accenture.javajoggers.pets.commando;
 
-import com.accenture.javajoggers.pets.services.AnimalRepository;
+import com.accenture.javajoggers.pets.db.AnimalRepository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Scanner;
 
 public class RemoveCommando extends Commando {
 
-    private Connection connection;
+    private AnimalRepository animalRepository;
     private Scanner scanner;
 
-    public RemoveCommando(Connection connection, Scanner scanner) {
-        this.connection = connection;
+    public RemoveCommando(AnimalRepository animalRepository, Scanner scanner) {
+        this.animalRepository = animalRepository;
         this.scanner = scanner;
     }
 
@@ -25,7 +23,7 @@ public class RemoveCommando extends Commando {
         System.out.println("Is it a cat or a dog?");
         String animalType = scanner.nextLine();
 
-        new AnimalRepository(connection).removeAnimal(petName, animalType);
+        animalRepository.removeAnimal(petName, animalType);
 
         System.out.println("Removed the pet");
     }

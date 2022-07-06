@@ -6,6 +6,7 @@ import com.accenture.javajoggers.pets.commando.ContainsCommando;
 import com.accenture.javajoggers.pets.commando.ExitCommando;
 import com.accenture.javajoggers.pets.commando.ListCommando;
 import com.accenture.javajoggers.pets.commando.RemoveCommando;
+import com.accenture.javajoggers.pets.db.AnimalRepository;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -25,15 +26,16 @@ public class PetsApp {
 
     private void run() throws SQLException {
         Connection connection = new Connector().getConnection();
+        AnimalRepository animalRepository = new AnimalRepository(connection);
 
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Welcome to Pets App");
-        Commando listCommando = new ListCommando(connection);
-        Commando addCommando = new AddCommando(connection, scanner);
+        Commando listCommando = new ListCommando(animalRepository);
+        Commando addCommando = new AddCommando(animalRepository, scanner);
         Commando exitCommando = new ExitCommando();
-        Commando containsCommando = new ContainsCommando(connection, scanner);
-        Commando removeCommando = new RemoveCommando(connection, scanner);
+        Commando containsCommando = new ContainsCommando(animalRepository, scanner);
+        Commando removeCommando = new RemoveCommando(animalRepository, scanner);
 
         ArrayList<Commando> commandos = new ArrayList<>();
         commandos.add(listCommando);
