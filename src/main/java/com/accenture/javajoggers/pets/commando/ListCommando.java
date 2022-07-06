@@ -2,10 +2,9 @@ package com.accenture.javajoggers.pets.commando;
 
 import com.accenture.javajoggers.pets.Pet;
 import com.accenture.javajoggers.pets.db.AnimalRepository;
-import com.accenture.javajoggers.pets.db.AnimalRepositoryDB;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 
 public class ListCommando extends Commando {
 
@@ -17,7 +16,7 @@ public class ListCommando extends Commando {
 
     @Override
     public void execute() throws SQLException {
-        ArrayList<Pet> pets = animalRepository.readAnimals();
+        List<Pet> pets = animalRepository.readAnimals();
 
         for (Pet pet : pets) {
             System.out.println("Pet:" + pet.getId() + " -> " + pet.getName() + ", Type: " + pet.getAnimalType());

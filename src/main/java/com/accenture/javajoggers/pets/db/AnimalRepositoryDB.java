@@ -51,11 +51,11 @@ public class AnimalRepositoryDB implements AnimalRepository {
             String type = resultSet.getString("type");
 
             Pet pet = null;
-            if ("dog".equals(type)) {
+            if ("dog".equalsIgnoreCase(type)) {
                 pet = new Dog(name);
                 pet.setAnimalType(type);
                 pet.setId(id);
-            } else if ("cat".equals(type)) {
+            } else if ("cat".equalsIgnoreCase(type)) {
                 pet = new Cat(name);
                 pet.setId(id);
                 pet.setAnimalType(type);
