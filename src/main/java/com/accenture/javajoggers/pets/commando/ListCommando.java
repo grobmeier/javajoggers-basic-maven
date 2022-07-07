@@ -2,6 +2,7 @@ package com.accenture.javajoggers.pets.commando;
 
 import com.accenture.javajoggers.pets.Pet;
 import com.accenture.javajoggers.pets.db.AnimalRepository;
+import com.accenture.javajoggers.pets.db.AnimalRepositoryException;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -15,13 +16,14 @@ public class ListCommando extends Commando {
     }
 
     @Override
-    public void execute() throws SQLException {
+    public boolean execute() throws AnimalRepositoryException {
         List<Pet> pets = animalRepository.readAnimals();
 
         for (Pet pet : pets) {
             System.out.println("Pet:" + pet.getId() + " -> " + pet.getName() + ", Type: " + pet.getAnimalType());
             pet.makeSound();
         }
+        return true;
     }
 
     @Override

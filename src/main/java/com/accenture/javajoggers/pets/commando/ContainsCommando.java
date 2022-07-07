@@ -1,9 +1,8 @@
 package com.accenture.javajoggers.pets.commando;
 
 import com.accenture.javajoggers.pets.db.AnimalRepository;
-import com.accenture.javajoggers.pets.db.AnimalRepositoryDB;
+import com.accenture.javajoggers.pets.db.AnimalRepositoryException;
 
-import java.sql.SQLException;
 import java.util.Scanner;
 
 public class ContainsCommando extends Commando {
@@ -17,7 +16,7 @@ public class ContainsCommando extends Commando {
     }
 
     @Override
-    public void execute() throws SQLException {
+    public boolean execute() throws AnimalRepositoryException {
         System.out.println("What pet do you look for?");
         String petName = scanner.nextLine();
 
@@ -29,6 +28,8 @@ public class ContainsCommando extends Commando {
         } else {
             System.out.println("It is missing");
         }
+
+        return true;
     }
 
     @Override

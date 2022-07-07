@@ -7,9 +7,9 @@ import java.util.ArrayList;
 public class ExitCommando extends Commando {
 
     @Override
-    public void execute() {
+    public boolean execute() {
         System.out.println("Exit");
-        System.exit(0);
+        return false;
     }
 
     @Override

@@ -20,76 +20,94 @@ public class AnimalRepositoryDB implements AnimalRepository {
     private Connection connection;
 
     public AnimalRepositoryDB(Connection connection) {
+        if (connection == null) {
+            IllegalArgumentException ei = new IllegalArgumentException();
+            throw ei;
+        }
+
         this.connection = connection;
     }
 
     @Override
-    public boolean exists(String petName, String animalType) throws SQLException {
-        String sql = "select count(*) as cnt from pets where name = ? and type = ?";
+    public boolean exists(String petName, String animalType) throws AnimalRepositoryException {
+        String sql = "selectAAAAAAA count(*) as cnt from pets where name = ? and type = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, petName);
+            preparedStatement.setString(2, animalType);
 
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1, petName);
-        preparedStatement.setString(2, animalType);
-
-        ResultSet resultSet = preparedStatement.executeQuery();
-        resultSet.next();
-        int count = resultSet.getInt("cnt");
-
-        return (count > 0);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            int count = resultSet.getInt("cnt");
+            return (count > 0);
+        } catch (SQLException ex) {
+            throw new AnimalRepositoryException("SQL caused a problem");
+        }
     }
 
     @Override
-    public List<Pet> readAnimals() throws SQLException {
+    public List<Pet> readAnimals() throws AnimalRepositoryException {
         ArrayList<Pet> result = new ArrayList<>();
 
         String sql = "select * from pets";
 
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery(sql);
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
 
+            LocalDateTime now = LocalDateTime.now();
+            Timestamp timestamp = Timestamp.valueOf(now);
+            // time in ms since 1.1.1970
+            long time = timestamp.getTime() / 1000;
 
-        LocalDateTime now = LocalDateTime.now();
-        Timestamp timestamp = Timestamp.valueOf(now);
-        // time in ms since 1.1.1970
-        long time = timestamp.getTime() / 1000;
+            while(resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                String type = resultSet.getString("type");
 
-        while(resultSet.next()) {
-            int id = resultSet.getInt("id");
-            String name = resultSet.getString("name");
-            String type = resultSet.getString("type");
-
-            Pet pet = null;
-            if ("dog".equalsIgnoreCase(type)) {
-                pet = new Dog(name);
-                pet.setAnimalType(type);
-                pet.setId(id);
-            } else if ("cat".equalsIgnoreCase(type)) {
-                pet = new Cat(name);
-                pet.setId(id);
-                pet.setAnimalType(type);
+                Pet pet = null;
+                if ("dog".equalsIgnoreCase(type)) {
+                    pet = new Dog(name);
+                    pet.setAnimalType(type);
+                    pet.setId(id);
+                } else if ("cat".equalsIgnoreCase(type)) {
+                    pet = new Cat(name);
+                    pet.setId(id);
+                    pet.setAnimalType(type);
+                }
+                result.add(pet);
             }
-            result.add(pet);
-        }
 
-        return result;
+            return result;
+        } catch(SQLException ex) {
+            throw new AnimalRepositoryException(ex.getMessage());
+        }
     }
 
     @Override
-    public void addPet(String petName, String animalType) throws SQLException {
+    public void addPet(String petName, String animalType) throws AnimalRepositoryException {
         String sql = "insert into pets (name, type) values (?, ?)";
 
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1, petName);
-        preparedStatement.setString(2, animalType);
-        preparedStatement.execute();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, petName);
+            preparedStatement.setString(2, animalType);
+            preparedStatement.execute();
+        } catch (SQLException ex) {
+            throw new AnimalRepositoryException("Add pet failed", ex);
+        }
     }
 
     @Override
-    public void removeAnimal(String petName, String animalType) throws SQLException {
+    public void removeAnimal(String petName, String animalType) throws AnimalRepositoryException {
         String sql = "delete from pets where name = ? and type = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1, petName);
-        preparedStatement.setString(2, animalType);
-        preparedStatement.execute();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, petName);
+            preparedStatement.setString(2, animalType);
+            preparedStatement.execute();
+        } catch (SQLException ex) {
+            throw new AnimalRepositoryException("remove animal failed", ex);
+        }
     }
 }

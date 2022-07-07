@@ -8,7 +8,7 @@ import com.accenture.javajoggers.pets.commando.ListCommando;
 import com.accenture.javajoggers.pets.commando.RemoveCommando;
 import com.accenture.javajoggers.pets.db.AnimalRepository;
 import com.accenture.javajoggers.pets.db.AnimalRepositoryDB;
-import com.accenture.javajoggers.pets.db.AnimalRepositoryMemory;
+import com.accenture.javajoggers.pets.db.AnimalRepositoryException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -26,10 +26,17 @@ public class PetsApp {
 
 
 
-    private void run() throws SQLException {
+    private void run() {
         Connection connection = new Connector().getConnection();
-        AnimalRepository animalRepository = new AnimalRepositoryDB(connection);
-        AnimalRepository animalRepositoryMemory = new AnimalRepositoryMemory(connection);
+
+        AnimalRepository animalRepository = null;
+        try {
+             animalRepository = new AnimalRepositoryDB(connection);
+        } catch(IllegalArgumentException ex) {
+            // can catch, but not mandatory
+            System.out.println("Could not create repository");
+            throw ex;
+        }
 
         Scanner scanner = new Scanner(System.in);
 
@@ -47,19 +54,33 @@ public class PetsApp {
         commandos.add(containsCommando);
         commandos.add(removeCommando);
 
-        while (true) {
-            System.out.println("What do you want to do?");
-            String command = scanner.nextLine();
+        try {
+            boolean shouldContinue = true;
+            while (shouldContinue) {
+                System.out.println("What do you want to do?");
+                String command = scanner.nextLine();
 
-            for (Commando commando : commandos) {
-                if (commando.shouldExecute(command)) {
-                    commando.execute();
+                try {
+                    for (Commando commando : commandos) {
+                        if (commando.shouldExecute(command)) {
+                            shouldContinue = commando.execute();
+                        }
+                    }
+                } catch (AnimalRepositoryException ex) {
+                    System.out.println("exception occurred sorry");
+                    ex.printStackTrace();
                 }
+            }
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException sqlException) {
+                sqlException.printStackTrace();
             }
         }
     }
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
         PetsApp app = new PetsApp();
         app.run();
     }

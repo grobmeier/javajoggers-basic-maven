@@ -7,16 +7,20 @@ import java.util.Properties;
 
 public class Connector {
 
-    public Connection getConnection() throws SQLException {
+    public Connection getConnection() {
         Properties connectionProps = new Properties();
         connectionProps.put("user", "root");
         connectionProps.put("password", "secret");
+        Connection conn;
+        try {
+            conn =
+                    DriverManager.getConnection("jdbc:mysql://localhost:3306/pets",
+                            connectionProps);
 
-        Connection conn =
-                DriverManager.getConnection("jdbc:mysql://localhost:3306/pets",
-                        connectionProps);
-
-        System.out.println("Connected to database");
+            System.out.println("Connected to database");
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
         return conn;
     }
 

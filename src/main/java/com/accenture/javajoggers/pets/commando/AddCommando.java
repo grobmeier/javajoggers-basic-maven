@@ -2,6 +2,7 @@ package com.accenture.javajoggers.pets.commando;
 
 import com.accenture.javajoggers.pets.db.AnimalRepository;
 import com.accenture.javajoggers.pets.db.AnimalRepositoryDB;
+import com.accenture.javajoggers.pets.db.AnimalRepositoryException;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -17,7 +18,7 @@ public class AddCommando extends Commando {
     }
 
     @Override
-    public void execute() throws SQLException {
+    public boolean execute() throws AnimalRepositoryException {
 
         System.out.println("Add a pet");
         System.out.println("What is the pets name?");
@@ -27,6 +28,7 @@ public class AddCommando extends Commando {
         String animalType = scanner.nextLine();
 
         animalRepository.addPet(petName, animalType);
+        return true;
     }
 
 
