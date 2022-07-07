@@ -29,7 +29,9 @@ public class AddCommando implements Commando {
         CakeIngredient cakeIngredient;
         do {
             cakeIngredient = createCakeIngredient();
-            cakeIngredients.add(cakeIngredient);
+            if (cakeIngredient != null) {
+                cakeIngredients.add(cakeIngredient);
+            }
         } while(cakeIngredient != null);
 
         cake.setCakeIngredients(cakeIngredients);

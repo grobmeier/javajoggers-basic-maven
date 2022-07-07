@@ -21,21 +21,46 @@ public class CakeRepository {
 
     public void addCake(Cake cake) {
         try {
-            String sql =
-                    "insert into cakes " +
-                    "set (cake_name) values (?)";
+            String sql = "insert into cakes (cake_name) values (?)";
 
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, cake.getName());
-            preparedStatement.execute();
+            preparedStatement.executeUpdate();
 
-            // insert ingredients here
-            
+            // Now the cake is in the database :-)
+            // please give me the freshly generated primary keys for the new albums:
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            generatedKeys.next();
+            int cakeId = generatedKeys.getInt(1);
+
+            addCakeIngredients(cakeId, cake.getCakeIngredients());
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
-
     }
+
+    public void addCakeIngredients(Integer cakeId, List<CakeIngredient> cakeIngredients) {
+        // insert ingredients here
+        for (CakeIngredient cakeIngredient : cakeIngredients) {
+            addCakeIngredients(cakeId, cakeIngredient);
+        }
+    }
+
+    public void addCakeIngredients(Integer cakeId, CakeIngredient ingredient) {
+        try {
+            String sql = "insert into cake_ingredients " +
+                    " (ingredient_name, amount, cakes_id) values (?, ?, ?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, ingredient.getIngredientName());
+            preparedStatement.setInt(2, ingredient.getAmount());
+            preparedStatement.setInt(3, cakeId);
+            preparedStatement.execute();
+        } catch(SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
 
     public List<Cake> listCakes() {
         List<Cake> result = new ArrayList<>();
